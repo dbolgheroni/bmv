@@ -1,0 +1,154 @@
+.\"
+.\" Copyright (c) 2014, Daniel Bolgheroni.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 
+.\"   1. Redistributions of source code must retain the above copyright
+.\"   notice, this list of conditions and the following disclaimer.
+.\" 
+.\"   2. Redistributions in binary form must reproduce the above
+.\"   copyright notice, this list of conditions and the following
+.\"   disclaimer in the documentation and/or other materials provided
+.\"   with the distribution.
+.\" 
+.\" THIS SOFTWARE IS PROVIDED BY DANIEL BOLGHERONI ''AS IS'' AND ANY
+.\" EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+.\" PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL DANIEL BOLGHERONI OR
+.\" CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+.\" EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+.\" PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+.\" PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+.\" OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+.\" (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+.\" OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.\"
+.Dd $Mdocdate: January 11 2014 $
+.Dt BMV 1
+.Os
+.Sh NAME
+.Nm bmv
+.Nd an utility to rename multiple files at once
+.Sh SYNOPSIS
+.Nm bmv
+.Bk -words
+.Op Fl d
+.Op Fl o Ar offset
+.Op Fl p Ar padding
+.Ar pattern
+.Ar file
+.Ek
+.Sh DESCRIPTION
+.Nm bmv
+stands for 'bulk move', an utility to rename multiple files with similar
+(but not necessarily equal) names at once using a pattern.
+Some options are also supported as command-line arguments.
+.Pp
+The options are as follows:
+.Bl -tag -width Ds
+.It Fl d
+Dummy mode.
+Doesn't rename anything, but shows the action that it will be taken
+when
+.Nm bmv
+is run.
+It is useful not only when debbuging, but to check if the action is
+correct before applying.
+A string
+.Dq (dummy)
+is written after every occurrence, to show that no
+action were underway.
+.It Fl o Ar offset
+Specifies the
+.Ar offset .
+Starts the renaming count to the number specified as argument.
+Defaults to 1.
+When an alpha character is given, the
+.Ar offset
+is set to 0.
+.It Fl p Ar padding
+The number of digits used when enumerating, e.g. when
+.Ar padding
+equals to 2, enumerating will be 01, 02 and so on.
+Defaults to 2. 
+.El
+.Sh EXAMPLES
+To rename files
+.Pa foo-01.txt ,
+.Pa foo-02.txt
+and
+.Pa foo-03.txt
+to, respectively,
+.Pa bar-01.txt ,
+.Pa bar-02.txt
+and
+.Pa bar-03.txt:
+.Bd -literal -offset indent
+$ bmv bar- *.txt
+foo-01.txt -> bar-01.txt
+foo-02.txt -> bar-02.txt
+foo-03.txt -> bar-03.txt
+.Ed
+.Pp
+To rename files
+.Pa foo-02.txt ,
+.Pa foo-03.txt
+and
+.Pa foo-04.txt
+to, respectively,
+.Pa bar-02.txt ,
+.Pa bar-03.txt
+and
+.Pa bar-04.txt ,
+specify the
+.Ar offset
+with
+.Fl o :
+.Bd -literal -offset indent
+$ bmv -o2 bar- *.txt
+foo-02.txt -> bar-02.txt
+foo-03.txt -> bar-03.txt
+foo-04.txt -> bar-04.txt
+.Ed
+.Pp
+In the case above, to use a different padding, specify the
+.Ar padding
+with
+.Fl p :
+.Bd -literal -offset indent
+$ bmv -o2 -p3 bar- *.txt
+foo-02.txt -> bar-002.txt
+foo-03.txt -> bar-003.txt
+foo-04.txt -> bar-004.txt
+.Ed
+.Pp
+File name pattern, a feature available in many shells, can be used to
+select the files to be renamed.
+In the case above, to rename only
+.Pa foo-01.txt
+and
+.Pa foo-02.txt : 
+.Bd -literal -offset indent
+$ bmv -d bar- foo-0[12].txt       
+foo-01.txt -> bar-01.txt (dummy)
+foo-02.txt -> bar-02.txt (dummy)
+.Ed
+.Pp
+For more information on this, check the
+.Xr ksh 1
+manual page.
+.Sh SEE ALSO
+.Xr mv 1 ,
+.Xr ksh 1
+.Sh CAVEATS
+When
+.Fl o
+or 
+.Fl p
+is used without argument, the behaviour is undefined.
+.Sh AUTHORS
+.Nm bmv
+was written by
+.An Daniel Bolgheroni Aq Mt daniel@bolgh.eng.br .
