@@ -36,13 +36,13 @@
 void usage(void);
 
 int main(int argc, char **argv) {
-    int ch, opt_d, opt_o, opt_p, offset, padding;
+    int ch, opt_d, opt_o, opt_p, opt_q, offset, padding;
     char *old, *pattern, *ext;
     char new[MAXFNSIZE];
 
     opt_d = opt_o = opt_p = 0;
 
-    while ((ch = getopt(argc, argv, "do:p:")) != -1) {
+    while ((ch = getopt(argc, argv, "do:p:q")) != -1) {
         switch (ch) {
             case 'd':
                 opt_d = 1;
@@ -54,6 +54,9 @@ int main(int argc, char **argv) {
             case 'p':
                 opt_p = 1;
                 padding = atoi(optarg);
+                break;
+            case 'q':
+                opt_q = 1;
                 break;
             default:
                 usage();
@@ -70,7 +73,7 @@ int main(int argc, char **argv) {
         usage();
 
     /* default value for -o */
-    if (!opt_o || offset == 0)
+    if (!opt_o)
         offset = 1;
 
     /* default value for -p */
@@ -129,14 +132,16 @@ int main(int argc, char **argv) {
 
         /* -d dummy mode option */
         if (!opt_d) {
-            fprintf(stdout, "%s -> %s\n", old, new);
+            if (!opt_q)
+                fprintf(stdout, "%s -> %s\n", old, new);
 
             if (rename(old, new)) {
                 fprintf(stderr, "error renaming %s\n", old);
                 exit(1);
             }
         } else {
-            printf("%s -> %s (dummy)\n", old, new);
+            if (!opt_q)
+                printf("%s -> %s (dummy)\n", old, new);
         }
 
         argv++; offset++;

@@ -64,15 +64,20 @@ action were underway.
 Specifies the
 .Ar offset .
 Starts the renaming count to the number specified as argument.
-Defaults to 1.
 When an alpha character is given, the
 .Ar offset
 is set to 0.
+Defaults to 1.
 .It Fl p Ar padding
 The number of digits used when enumerating, e.g. when
 .Ar padding
 equals to 2, enumerating will be 01, 02 and so on.
 Defaults to 2. 
+.It Fl q
+Quiet mode.
+In this mode,
+.Nm bmv
+doesn't output the files being renamed.
 .El
 .Sh EXAMPLES
 To rename files
