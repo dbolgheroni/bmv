@@ -66,17 +66,15 @@ int main(int argc, char **argv) {
     argc -= optind;
     argv += optind;
 
-    /* TODO: resolve when no file globbing succeeds */
-
     /* minimum requirements */
     if (argc < 3)
         usage();
 
-    /* default value for -o */
+    /* -o default value if none is set */
     if (!opt_o)
         offset = 1;
 
-    /* default value for -p */
+    /* -p default value if none is set */
     if (!opt_p)
         padding = 2;
 
@@ -132,6 +130,7 @@ int main(int argc, char **argv) {
 
         /* -d dummy mode option */
         if (!opt_d) {
+            /* -q quiet mode */
             if (!opt_q)
                 fprintf(stdout, "%s -> %s\n", old, new);
 
@@ -140,6 +139,7 @@ int main(int argc, char **argv) {
                 exit(1);
             }
         } else {
+            /* -q quiet mode */
             if (!opt_q)
                 printf("%s -> %s (dummy)\n", old, new);
         }
