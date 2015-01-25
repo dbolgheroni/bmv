@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
     char *old, *pattern, *ext;
     char new[MAXFNSIZE];
 
-    opt_d = opt_o = opt_p = 0;
+    opt_d = opt_o = opt_p = opt_q = 0;
 
     while ((ch = getopt(argc, argv, "do:p:q")) != -1) {
         switch (ch) {
