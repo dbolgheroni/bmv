@@ -1,0 +1,1 @@
+bmv stands for 'bulk move', an utility to rename multiple files at once, based on a pattern and some command-line options.
