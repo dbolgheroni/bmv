@@ -1,0 +1,97 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright (c) 2018, Daniel Bolgheroni. All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+# 
+#   1. Redistributions of source code must retain the above copyright
+#      notice, this list of conditions and the following disclaimer.
+#
+#   2. Redistributions in binary form must reproduce the above copyright
+#      notice, this list of conditions and the following disclaimer in
+#      the documentation and/or other materials provided with the
+#      distribution.
+# 
+# THIS SOFTWARE IS PROVIDED BY DANIEL BOLGHERONI ''AS IS'' AND ANY
+# EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+# PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL DANIEL BOLGHERONI OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+# PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+import argparse
+import os
+
+check_alert = "check, does not modify anything"
+
+# parse arguments
+parser = argparse.ArgumentParser()
+parser.add_argument("-C",
+        help=check_alert,
+        dest="check",
+        action="store_true",)
+
+parser.add_argument("-o",
+        help="set offset, to start counting from this position",
+        dest="offset",
+        default=1,)
+
+parser.add_argument("-d",
+        help="set padding, the number of zeros before the integer",
+        dest="padding",
+        default=2,)
+
+parser.add_argument("-p",
+        help="set pattern, the number of zeros before the integer",
+        dest="pattern",
+        required=True,)
+
+parser.add_argument("-e",
+        help="set extension",
+        dest="extension",
+        required=True)
+
+parser.add_argument("-j",
+        help="set jumps",
+        dest="jumps",
+        default=[],
+        nargs="*",
+        type=int)
+
+parser.add_argument("files", nargs="*",)
+
+args = parser.parse_args()
+
+# alert for check mode
+if args.check:
+    print(check_alert)
+
+offset = args.offset
+for f in args.files:
+    # jumps 
+    if offset in args.jumps:
+        offset += 2
+        continue
+
+    # filename
+    filename = "{}{:0{npad}}".format(
+            args.pattern,
+            offset,
+            npad=args.padding)
+
+    # extension
+    new = '{}.{}'.format(filename, args.extension)
+
+    print("{} -> {}".format(f, new))
+    offset += 1
+
+    if not args.check:
+        os.rename(f, new)
