@@ -40,13 +40,6 @@ parser.add_argument("-C",
         dest="check",
         action="store_true",)
 
-parser.add_argument("-j",
-        help="set jumps",
-        dest="jumps",
-        default=[],
-        nargs="*",
-        type=int)
-
 parser.add_argument("-p",
         help="set regex pattern",
         dest="repattern",
