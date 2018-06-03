@@ -29,6 +29,7 @@
 
 import argparse
 import os
+import re
 
 check_alert = "check, does not modify anything"
 
@@ -39,32 +40,24 @@ parser.add_argument("-C",
         dest="check",
         action="store_true",)
 
-parser.add_argument("-o",
-        help="set offset, to start counting from this position",
-        dest="offset",
-        default=1,)
-
-parser.add_argument("-d",
-        help="set padding, the number of zeros before the integer",
-        dest="padding",
-        default=2,)
-
-parser.add_argument("-p",
-        help="set pattern, the number of zeros before the integer",
-        dest="pattern",
-        required=True,)
-
-parser.add_argument("-e",
-        help="set extension",
-        dest="extension",
-        required=True)
-
 parser.add_argument("-j",
         help="set jumps",
         dest="jumps",
         default=[],
         nargs="*",
         type=int)
+
+parser.add_argument("-p",
+        help="set regex pattern",
+        dest="repattern",
+        default=[],
+        nargs="*")
+
+parser.add_argument("-r",
+        help="set repl",
+        dest="repl",
+        default=[],
+        nargs="*")
 
 parser.add_argument("files", nargs="*",)
 
@@ -74,24 +67,13 @@ args = parser.parse_args()
 if args.check:
     print(check_alert)
 
-offset = args.offset
 for f in args.files:
-    # jumps 
-    if offset in args.jumps:
-        offset += 2
-        continue
+    orig = f
 
-    # filename
-    filename = "{}{:0{npad}}".format(
-            args.pattern,
-            offset,
-            npad=args.padding)
+    for p, r in zip(args.repattern, args.repl):
+        f = re.sub(p, r, f)
 
-    # extension
-    new = '{}.{}'.format(filename, args.extension)
-
-    print("{} -> {}".format(f, new))
-    offset += 1
+    print('{} -> {}'.format(orig, f))
 
     if not args.check:
-        os.rename(f, new)
+        os.rename(orig, f)
