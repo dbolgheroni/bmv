@@ -41,14 +41,14 @@ parser.add_argument("-C",
         action="store_true",)
 
 parser.add_argument("-p",
-        help="set regex pattern",
-        dest="repattern",
+        help="set regex to match current files",
+        dest="old",
         default=[],
         nargs="*")
 
 parser.add_argument("-r",
-        help="set repl",
-        dest="repl",
+        help="set replacement regex for the new files",
+        dest="new",
         default=[],
         nargs="*")
 
@@ -63,7 +63,7 @@ if args.check:
 for f in args.files:
     orig = f
 
-    for p, r in zip(args.repattern, args.repl):
+    for p, r in zip(args.old, args.new):
         f = re.sub(p, r, f)
 
     print('{} -> {}'.format(orig, f))
