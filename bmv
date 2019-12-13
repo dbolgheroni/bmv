@@ -28,8 +28,10 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import argparse
+import glob
 import os
 import re
+import pathlib
 
 check_alert = "check, does not modify anything"
 
@@ -40,17 +42,15 @@ parser.add_argument("-C",
         dest="check",
         action="store_true",)
 
-parser.add_argument("-p",
-        help="set regex to match current files",
+parser.add_argument("-o", "--old",
+        help="set regex to match old files",
         dest="old",
-        default=[],
-        nargs="*")
+        nargs=1,)
 
-parser.add_argument("-r",
+parser.add_argument("-n", "--new",
         help="set replacement regex for the new files",
         dest="new",
-        default=[],
-        nargs="*")
+        nargs=1,)
 
 parser.add_argument("files", nargs="*",)
 
@@ -61,12 +61,15 @@ if args.check:
     print(check_alert)
 
 for f in args.files:
-    orig = f
+    orig = pathlib.Path(f)
 
-    for p, r in zip(args.old, args.new):
-        f = re.sub(p, r, f)
+    if not orig.is_file():
+        continue
 
-    print('{} -> {}'.format(orig, f))
+    for old, new in zip(args.old, args.new):
+        movef = pathlib.Path(re.sub(old, new, f))
+
+    print('{} -> {}'.format(orig, movef))
 
     if not args.check:
-        os.rename(orig, f)
+        os.rename(orig, movef)
